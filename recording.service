@@ -10,3 +10,4 @@ ExecStart=-/usr/bin/arecord -f S32_LE -c 2 -r 48000 -D hw:CARD=pisound ${wav}
 ExecStopPost=echo converting to ${mp3}
 ExecStopPost=/usr/bin/ffmpeg -y -loglevel warning -i ${wav} -ac 2 -b:a 320k -ar 48k ${mp3}
 ExecStopPost=rm -v ${wav}
+TimeoutStopSec=infinity
