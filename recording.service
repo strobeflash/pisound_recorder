@@ -1,0 +1,12 @@
+[Unit]
+Description=Record audio from Pisound
+Requires=srv-share.mount
+
+[Service]
+Type=simple
+ExecStartPre=/bin/bash -c "/bin/systemctl set-environment wav=$(mktemp)"
+ExecStartPre=/bin/bash -c "/bin/systemctl set-environment mp3=/srv/share/mixname_$(/usr/bin/date +%%F_%%H-%%M-%%S).mp3"
+ExecStart=-/usr/bin/arecord -f S32_LE -c 2 -r 48000 -D hw:CARD=pisound ${wav}
+ExecStopPost=echo converting to ${mp3}
+ExecStopPost=/usr/bin/ffmpeg -y -loglevel warning -i ${wav} -ac 2 -b:a 320k -ar 48k ${mp3}
+ExecStopPost=rm -v ${wav}
